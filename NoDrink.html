@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mans Skaidrības Skaitītājs</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .counter-container {
+            text-align: center;
+            padding: 35px 25px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+        }
+        h3 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #1e293b;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        .timer-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .time-box {
+            flex: 1;
+            background: #ffffff;
+            padding: 15px 5px;
+            border-radius: 10px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: darkred; /* Zaļā krāsa */
+            line-height: 1.1;
+        }
+        .label {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: lowercase;
+        }
+        .subtitle {
+            margin-top: 25px;
+            margin-bottom: 0;
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="counter-container">
+        <h3>No alkohola brīvs</h3>
+        
+        <div class="timer-grid">
+            <div class="time-box">
+                <div class="number" id="days">0</div>
+                <div class="label" id="days-label">Dienas</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="hours">0</div>
+                <div class="label" id="hours-label">Stundas</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="minutes">0</div>
+                <div class="label" id="minutes-label">Minūtes</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="seconds">0</div>
+                <div class="label" id="seconds-label">Sekundes</div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+    (function() {
+        // ==========================================
+        // IESTATIET SAVU SĀKUMA DATUMU UN LAIKU ŠEIT:
+        // Formāts: Date.UTC(Gads, Mēnesis-1, Diena, Stunda, Minūte)
+        // Svarīgi: Mēneši sākas no 0 (0=janvāris, 9=oktobris, 11=decembris)
+        // Šis ir iestatīts uz 2026. gada 7. oktobri, plkst. 12:00 UTC
+        // ==========================================
+        const startDate = new Date(Date.UTC(1996, 1, 1, 12, 0, 0)); 
+
+        function getLatvianLabel(number, form1, form2) {
+            const lastDigit = number % 10;
+            const lastTwoDigits = number % 100;
+            if (lastDigit === 1 && lastTwoDigits !== 11) {
+                return form1; // vienskaitlis (piem. "diena")
+            }
+            return form2; // daudzskaitlis (piem. "dienas")
+        }
+
+        function updateCounter() {
+            const today = new Date();
+            const timeDiff = today.getTime() - startDate.getTime();
+            
+            let totalSeconds = Math.floor(timeDiff / 1000);
+            if (totalSeconds < 0) totalSeconds = 0;
+
+            // Aprēķini laika vienībām
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            // Ievieto skaitļus HTML
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+
+            // Pareizas latviešu valodas galotnes
+            document.getElementById('days-label').innerText = getLatvianLabel(days, "diena", "dienas");
+            document.getElementById('hours-label').innerText = getLatvianLabel(hours, "stunda", "stundas");
+            document.getElementById('minutes-label').innerText = getLatvianLabel(minutes, "minūte", "minūtes");
+            document.getElementById('seconds-label').innerText = getLatvianLabel(seconds, "sekunde", "sekundes");
+        }
+
+        // Palaiž uzreiz un pēc tam atjauno katru sekundi
+        updateCounter();
+        setInterval(updateCounter, 1000); 
+    })();
+    </script>
+
+</body>
+</html>
